@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --primary-color: #346DDB;
+  --secondary-color: #1F2937;
+  --background-color: #000000;
+  --text-color: #FFFFFF;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+@layer components {
+  .container {
+    @apply px-4 mx-auto max-w-7xl;
+  }
+
+  .section {
+    @apply py-16 md:py-24 px-4;
+  }
+
+  .heading-lg {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold;
+  }
+
+  .heading-md {
+    @apply text-2xl md:text-3xl font-bold;
+  }
+
+  .btn-primary {
+    @apply bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent hover:bg-white/10 text-white border border-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-300;
+  }
+
+  .agent-card {
+    @apply bg-gray-900 p-6 rounded-xl border border-gray-800 hover:border-primary/50 transition-all duration-300;
+  }
+
+  .text-primary {
+    @apply text-[#346DDB];
+  }
+
+  .bg-primary {
+    @apply bg-[#346DDB];
+  }
+
+  .form-input {
+    @apply w-full bg-gray-900 border border-gray-700 rounded-lg py-3 px-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent;
+  }
+
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+}
+
+.hero-gradient {
+  background: radial-gradient(circle at center, rgba(52, 109, 219, 0.2), transparent 70%);
+}
+
+.subheading {
+  @apply text-xl md:text-2xl font-light text-gray-300 mt-4 max-w-3xl;
+}
+
+input, textarea {
+  @apply bg-gray-900 border border-gray-700 rounded-md px-4 py-3 text-white w-full focus:outline-none focus:ring-2 focus:ring-primary;
+}
+
+.fact-card {
+  @apply bg-gray-900 p-6 rounded-lg border border-gray-800 flex flex-col items-center text-center;
+}
+
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
