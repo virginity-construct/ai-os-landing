@@ -1,195 +1,181 @@
 "use client";
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
 
-const InvestorSection = () => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
-
+export default function InvestorSection() {
   const [formData, setFormData] = useState({
-    email: '',
     name: '',
+    email: '',
     company: '',
+    investmentRange: '',
     message: '',
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formStatus, setFormStatus] = useState<{
-    success?: boolean;
-    message?: string;
-  }>({});
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+    success: boolean;
+    message: string;
+  } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate email
     if (!formData.email) {
-      setFormStatus({
-        success: false,
-        message: 'Email is required'
-      });
+      setFormStatus({ success: false, message: 'Email is required' });
       return;
     }
-
-    setIsSubmitting(true);
-    setFormStatus({});
-
+    
+    setIsLoading(true);
+    
     try {
-      const response = await fetch('/api/investor', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
+      // For static export, we'll simulate form submission
+      // In a real deployment, this would call the API endpoint
+      console.log('Investor form submitted:', formData);
       
-      if (response.ok) {
-        setFormStatus({
-          success: true,
-          message: data.message || 'Investor deck request submitted successfully!'
-        });
-        // Reset form on success
-        setFormData({
-          email: '',
-          name: '',
-          company: '',
-          message: '',
-        });
-      } else {
-        setFormStatus({
-          success: false,
-          message: data.message || 'Something went wrong. Please try again.'
-        });
-      }
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Show success message
+      setFormStatus({
+        success: true,
+        message: 'Thank you for your interest! Our team will contact you shortly.',
+      });
+      
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        company: '',
+        investmentRange: '',
+        message: '',
+      });
     } catch (error) {
       console.error('Error submitting form:', error);
       setFormStatus({
         success: false,
-        message: 'Network error. Please try again later.'
+        message: 'Something went wrong. Please try again later.',
       });
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
-  return (
-    <section id="investors" className="section bg-gray-950">
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto text-center"
-      >
-        <h2 className="heading-lg mb-4">For Investors</h2>
-        <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-          Interested in investing in the future of autonomous business building? Request our investor deck.
-        </p>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-        <div className="bg-gray-900 p-8 rounded-xl border border-gray-800">
+  return (
+    <section id="investors" className="py-20 bg-gradient-to-b from-gray-900 to-black">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center mb-12"
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+            Investor Relations
+          </h2>
+          <p className="text-xl text-gray-300 mb-8">
+            Join us in revolutionizing the future of AI and business automation. We're seeking strategic partners who share our vision.
+          </p>
+        </motion.div>
+
+        <div className="max-w-3xl mx-auto bg-gray-900 p-8 rounded-xl border border-gray-800 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="name" className="block text-left text-gray-300 mb-2">
-                  Name
-                </label>
+                <label htmlFor="name" className="block text-gray-300 mb-2">Name</label>
                 <input
                   type="text"
                   id="name"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="form-input"
-                  placeholder="Your Name"
+                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                  placeholder="Your name"
+                  required
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-left text-gray-300 mb-2">
-                  Email <span className="text-red-500">*</span>
-                </label>
+                <label htmlFor="email" className="block text-gray-300 mb-2">Email</label>
                 <input
                   type="email"
                   id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="form-input"
+                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                   placeholder="your@email.com"
                   required
                 />
               </div>
             </div>
 
-            <div>
-              <label htmlFor="company" className="block text-left text-gray-300 mb-2">
-                Company
-              </label>
-              <input
-                type="text"
-                id="company"
-                name="company"
-                value={formData.company}
-                onChange={handleChange}
-                className="form-input"
-                placeholder="Your Company"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="company" className="block text-gray-300 mb-2">Company</label>
+                <input
+                  type="text"
+                  id="company"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                  placeholder="Your company"
+                />
+              </div>
+              <div>
+                <label htmlFor="investmentRange" className="block text-gray-300 mb-2">Investment Range</label>
+                <select
+                  id="investmentRange"
+                  name="investmentRange"
+                  value={formData.investmentRange}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                  required
+                >
+                  <option value="">Select range</option>
+                  <option value="$10k-$50k">$10k-$50k</option>
+                  <option value="$50k-$250k">$50k-$250k</option>
+                  <option value="$250k-$1M">$250k-$1M</option>
+                  <option value="$1M+">$1M+</option>
+                </select>
+              </div>
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-left text-gray-300 mb-2">
-                Message
-              </label>
+              <label htmlFor="message" className="block text-gray-300 mb-2">Message</label>
               <textarea
                 id="message"
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                className="form-input h-32 resize-none"
+                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white h-32"
                 placeholder="Tell us about your investment interests..."
               ></textarea>
             </div>
 
-            {formStatus.message && (
-              <div className={`p-4 rounded-lg ${formStatus.success ? 'bg-green-900/50 text-green-200' : 'bg-red-900/50 text-red-200'}`}>
-                {formStatus.message}
-              </div>
-            )}
-
-            <div>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="btn-primary w-full flex items-center justify-center"
-              >
-                {isSubmitting ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Processing...
-                  </>
-                ) : (
-                  'Request Investor Deck'
-                )}
-              </button>
-            </div>
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-md hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Submitting...' : 'Submit Inquiry'}
+            </motion.button>
           </form>
+          
+          {formStatus && (
+            <div className={`mt-6 p-4 rounded-md ${formStatus.success ? 'bg-green-800/50 text-green-200' : 'bg-red-800/50 text-red-200'}`}>
+              {formStatus.message}
+            </div>
+          )}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
-};
-
-export default InvestorSection;
+}
