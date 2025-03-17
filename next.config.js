@@ -7,6 +7,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Indicate that API routes should be ignored during static export
+  trailingSlash: true,
 }
 
 module.exports = nextConfig
